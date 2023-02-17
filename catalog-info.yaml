@@ -1,0 +1,18 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: "fuse-backstage-demo"
+  description: "Fuse on Spring Boot project"
+  annotations:
+    github.com/project-slug: jcordes73/fuse-backstage-demo
+    backstage.io/techdocs-ref: dir:.
+  tags:
+    - recommended
+    - java
+    - camel
+    - springboot
+    - maven
+spec:
+  type: website
+  lifecycle: experimental
+  owner: "integration-core"

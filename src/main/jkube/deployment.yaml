@@ -1,0 +1,39 @@
+metadata:
+  annotations:
+    app: fuse-backstage-demo
+    app.openshift.io/runtime: camel
+    rht_comp: Fuse
+    rht_comp_ver: 7.11
+    rht_prod_name: Red_Hat_Integration
+    rht_prod_ver: 2022.Q2
+  name: fuse-backstage-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fuse-backstage-demo
+  template:
+    metadata:
+      annotations:
+      labels:
+        app: fuse-backstage-demo
+    spec:
+      containers:
+        - resources:
+            requests:
+              cpu: 0.2
+              memory: 256Mi
+            limits:
+              cpu: 1
+              memory: 256Mi
+          env:
+          - name: SPRING_APPLICATION_JSON
+            value: '{"server":{"undertow":{"io-threads":1, "worker-threads":2 }}}'
+          - name: JAEGER_SERVICE_NAME
+            value: 'fuse-backstage-demo'
+          - name: JAEGER_AGENT_HOST
+            value: 'jaeger-all-in-one-inmemory-agent'
+          - name: JAEGER_SAMPLER_PARAM
+            value: '1.0'
+          - name: AB_JMX_EXPORTER_CONFIG
+            value: "prometheus-config.yml"

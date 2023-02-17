@@ -1,0 +1,38 @@
+# Fuse on Spring Boot Application - 
+
+## Introduction
+This is a Fuse on Spring Boot Application for implementing integrations using Apache Camel.
+
+It uses the following Apache Camel components:
+
+
+* AMQP
+
+
+* CXF
+
+
+* JPA
+
+
+* Kafka
+
+
+## Related Services
+
+
+### AMQ Broker
+
+
+### Database (postgresql)
+
+
+### Kafka Broker
+
+
+
+## Deployment to OpenShift
+
+For deploying the application to OpenShift, login to OpenShift and execute
+
+    mvn clean install -Popenshift

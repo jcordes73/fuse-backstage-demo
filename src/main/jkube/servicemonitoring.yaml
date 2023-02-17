@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    k8s-app: fuse-backstage-demo
+  name: fuse-backstage-demo
+spec:
+  endpoints:
+  - interval: 30s
+    port: prometheus
+    scheme: http
+    path: /metrics
+  selector:
+    matchLabels:
+      app: fuse-backstage-demo

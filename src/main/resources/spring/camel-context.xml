@@ -1,0 +1,62 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:util="http://www.springframework.org/schema/util"
+	   xmlns:camel="http://camel.apache.org/schema/spring"
+
+           xsi:schemaLocation="http://www.springframework.org/schema/beans
+          http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+          http://www.springframework.org/schema/util
+          http://www.springframework.org/schema/util/spring-util.xsd
+          http://camel.apache.org/schema/spring
+          http://camel.apache.org/schema/spring/camel-spring.xsd
+          http://camel.apache.org/schema/cxf
+          http://camel.apache.org/schema/cxf/camel-cxf.xsd
+          http://cxf.apache.org/policy
+          http://cxf.apache.org/schemas/policy.xsd
+          http://cxf.apache.org/transports/http/configuration
+	  http://cxf.apache.org/schemas/configuration/http-conf.xsd">
+
+
+  <bean id="jmsConnectionFactory"
+        class="org.apache.qpid.jms.JmsConnectionFactory"
+        primary="true" xmlns="http://www.springframework.org/schema/beans">
+    <property name="remoteURI" value="${amqp.uri}"/>
+    <property name="username" value="${amqp.username}"/>
+    <property name="password" value="${amqp.password}"/>
+  </bean>
+  <bean id="jmsCachingConnectionFactory"
+        class="org.springframework.jms.connection.CachingConnectionFactory" xmlns="http://www.springframework.org/schema/beans">
+    <property name="targetConnectionFactory" ref="jmsConnectionFactory" />
+  </bean>
+  <bean id="jmsConfig"
+        class="org.apache.camel.component.jms.JmsConfiguration" xmlns="http://www.springframework.org/schema/beans">
+    <constructor-arg ref="jmsCachingConnectionFactory" />
+    <property name="cacheLevelName" value="CACHE_CONSUMER" />
+  </bean>
+  <bean id="amqp"
+        class="org.apache.camel.component.amqp.AMQPComponent" xmlns="http://www.springframework.org/schema/beans">
+    <property name="configuration" ref="jmsConfig" />
+  </bean>
+
+
+  <bean id="jpa" class="org.apache.camel.component.jpa.JpaComponent">
+    <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    <property name="transactionManager" ref="jpaTxManager"/>
+  </bean>
+  <bean id="jpaTxManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+    <property name="entityManagerFactory" ref="entityManagerFactory"/>
+  </bean>
+  <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
+    <property name="persistenceUnitName" value="persistenceUnit"/>
+  </bean>
+
+  <camelContext xmlns="http://camel.apache.org/schema/spring" streamCache="true">
+
+    <restConfiguration bindingMode="auto" component="servlet" port="8080"/>
+
+    <route>
+      <from uri="timer:timer"/>
+      <log message="Timer fired at ${headers.firedTime}"/>
+    </route>
+  </camelContext>
+</beans>
